@@ -1,14 +1,13 @@
 const listOfLinks = () => document.querySelector("#listOfLinks")
 const onDeckCircle = () => document.querySelector("#onDeckCircle")
-
+const releaseButton = () => document.querySelector("#sortByRelease")
 const objectiveButton = () => document.querySelector("#sortByObjective")
 const newLinkButton = () => document.querySelector("#newLinkButton")
 const saveButton = () => document.querySelector("#saveButton")
 const loadButton = () => document.querySelector("#loadButton")
 
 let tempSave
-let savedNode
-
+//let savedNode
 
 class ListNode {
     constructor(val, nxt=null) {
@@ -90,17 +89,15 @@ function renderOneLink(hero, className='hero-card', parent=listOfLinks()) {
 
 
 function renderAllListedLinks(node) {
-
     listOfLinks().innerHTML = ''
     while (node) {
-
         renderOneLink(node.val)
         node = node.nxt
     }
 }
 
 function mergeTwoLists(left, right, attr) {
-
+    // console.log('merge', attr)
     if (!left) {
         return right
     }
@@ -120,7 +117,7 @@ function mergeTwoLists(left, right, attr) {
 
 function prevList(node, right) {
     let slow = node
-    let fast = node.nxt
+    let fast = slow.nxt
     while (fast != right) {
         slow = slow.nxt
         fast = fast.nxt
@@ -130,6 +127,7 @@ function prevList(node, right) {
 }
 
 function sortList(node, attr='objectiveRanking') {
+    // console.log(attr)
     if (!node || !node.nxt ) {
         return node     //returns a singleton or empty node
     } else {
@@ -137,13 +135,12 @@ function sortList(node, attr='objectiveRanking') {
         let left = prevList(node, right)
         //let right = sortList(rightList)
         //let left = sortList(leftList)
-        let x = mergeTwoLists(sortList(left), sortList(right), attr)
-        console.log(testArray(x, attr))
-        cleanup(x)
-        return x
+        tempSave = mergeTwoLists(sortList(left, attr), sortList(right, attr), attr)
+        renderAllListedLinks(tempSave)
+        console.log(testArray(tempSave, attr))
+        return tempSave
     }
 }
-
 
 function cleanup(head) {
     renderAllListedLinks(head)
@@ -158,11 +155,9 @@ function prefixNode(neue, head) {
 }
 
 function infixNode(neue, head) {
-
     let slow = splitTheList(head)
     neue.nxt = slow.nxt
     slow.nxt = neue
-
     cleanup(head)
 }
 
@@ -172,7 +167,6 @@ function suffixNode(neue, head) {
         tail = tail.nxt
     }
     tail.nxt = neue
-
     cleanup(head)
 }
 
@@ -187,27 +181,25 @@ function onDeckLoader(headNode) {
     inf.addEventListener('click', (e) => infixNode(newLink, headNode))
     suf.addEventListener('click', (e) => suffixNode(newLink, headNode))
 
-    //console.log("onDL")
     newLinkButton().style.display = 'none'
     onDeckCircle().append(pre, inf, suf)
     renderOneLink(newLink.val, 'on-deck', onDeckCircle())
-
 }
 
-function saveList(node) {
-
-    flashHead = new ListNode(node.val, node.nxt)
-    flash = flashHead
-    let qwert = 0
-    while (flash && flash.nxt) {
-        console.log(qwert)
-        flash = flash.nxt
-        flash.nxt = new ListNode(flash.nxt.val, flash.nxt.nxt)
-        qwert++
-    }
-    savedNode = flashHead
-    loadButton().style.display = 'inline'
-}
+// function saveList(node) {
+//
+//     flashHead = new ListNode(node.val, node.nxt)
+//     flash = flashHead
+//     let qwert = 0
+//     while (flash && flash.nxt) {
+//         console.log(qwert)
+//         flash = flash.nxt
+//         flash.nxt = new ListNode(flash.nxt.val, flash.nxt.nxt)
+//         qwert++
+//     }
+//     savedNode = flashHead
+//     loadButton().style.display = 'inline'
+// }
 
 function splitTheList(node) {
     if (!node || !node.nxt ) {
@@ -220,27 +212,22 @@ function splitTheList(node) {
         slow = slow.nxt
     }
     return slow
-
 }
-function testArray(head, attr='objectiveRanking') { //for ease of testing, goddam
-    let x = []
+
+function testArray(head, attr='objectiveRanking') { //for ease of testing on the console
+    let test = []
     while (head) {
-        x.push(head.val[attr])
+        test.push(head.val[attr])
         head = head.nxt
     }
-    return x
+    return test
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-
-    savedNode = setup()
-    tempSave = savedNode
-
-    renderAllListedLinks(savedNode)
+    tempSave = setup()
+    renderAllListedLinks(tempSave)
 
     objectiveButton().addEventListener('click', (e) => sortList (tempSave, 'objectiveRanking'))
-
-
-    newLinkButton().addEventListener('click', (e) => onDeckLoader(savedNode))
-
+    releaseButton().addEventListener('click', (e) => sortList( tempSave, 'year'))
+    newLinkButton().addEventListener('click', (e) => onDeckLoader(tempSave))
 })
