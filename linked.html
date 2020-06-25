@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+        <meta charset="UTF-8">
+
+        <style>
+            body {
+                background-color: rgb(18,17,23);
+                color: rgb(255,255,230);
+                font-family: sans-serif;
+                margin: auto;
+                padding-left: 100px;
+            }
+            .profile-picture {
+                display: block;
+                max-width:200px;
+                max-height:300px;
+                width: auto;
+                height: auto;
+            }
+            .hero-card {
+                max-width: 400px;
+                margin: 10px 0px;
+                border-style: solid;
+                border-color: green;
+                padding-left: 40px;
+            }
+            .on-deck {
+                max-width: 400px;
+                margin: 10px 0px;
+                border-style: solid;
+                border-color: red;
+                padding-left: 40px;
+            }
+
+        </style>
+    </head>
+    <body>
+        <h3> Links! </h3>
+        <!-- <button id='sortByRelease'>Sort by the Release Date!</button> -->
+        <button id='sortByObjective'>Sort by the Objective Nostalgia Metric!</button>
+        <!-- <button id='saveButton'>Save this List!</button> -->
+        <!-- <button id='loadButton' style='display:none'>Load a Saved List!</button> -->
+        <div id='content'>
+            <div id='listOfLinks'></div>
+
+            <div id='onDeckCircle'>
+                <button id='newLinkButton'>We forgot one!</button>
+            </div>
+            <br>
+            <br>
+        </div>
+        <script src='./linked.js'></script>
+    </body>
+</html>
